@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: how-to-kubernetes-deployment
+  namespace: how-to-kubernetes
+  labels:
+    app: how-to-kubernetes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: how-to-kubernetes
+  template:
+    metadata:
+      labels:
+        app: how-to-kubernetes
+    spec:
+      containers:
+      - name: how-to-kubernetes
+        image: sbc-docker-local.bin.swisscom.com/how-to-kubernetes
+        ports:
+        - containerPort: 8080
