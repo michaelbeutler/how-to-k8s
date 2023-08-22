@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: "{{.Release.Name}}-service-monitor"
+spec:
+  endpoints:
+    - port: http
+      path: /metrics
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app: "{{.Release.Name}}"

@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: how-to-k8s
+  namespace: argocd
+spec:
+  description: How to k8s at SBC related application sets.
+
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+    - https://git.swisscom.com/scm/sb/gitops.git
+
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: Namespace
+
+  destinations:
+    - name: sbcc-cluster-7101
+      server: https://console.sbcdc.ch/k8s/clusters/c-m-7h5gzv9z
+      namespace: how-to-k8s
+    - name: sbcc-cluster-7101
+      server: https://console.sbcdc.ch/k8s/clusters/c-m-7h5gzv9z
+      namespace: cattle-dashboards
+
+  roles:
+    # A role which provides read-only access to all applications in the project
+    - name: read-only
+      description: Read-only privileges to how-to-k8s related applications.
+      policies:
+        - "p, proj:how-to-k8s:read-only, applications, get, how-to-k8s/*, allow"
+      groups:
+        - "DL_PF00-SBC-Kubernetes_Users"

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: how-to-k8s
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: michael-beutler
+  template:
+    metadata:
+      name: "{{name}}-how-to-k8s"
+      namespace: argocd
+    spec:
+      project: how-to-k8s
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true
+        retry:
+          limit: 2
+          backoff:
+            duration: 15s
+            factor: 2
+            maxDuration: 5m
+      source:
+        repoURL: https://git.swisscom.com/scm/sb/gitops.git
+        targetRevision: HEAD
+        path: apps/how-to-k8s/{{name}}
+        helm:
+          releaseName: "{{name}}-how-to-k8s"
+          valueFiles:
+            - "values.yaml"
+            - "values-{{name}}.yaml"
+      destination:
+        name: sbcc-cluster-7101
+        namespace: how-to-k8s
